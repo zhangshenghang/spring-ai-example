@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能文档审核系统</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .log-info {
+            background-color: #d4edda;
+            border-left: 3px solid #28a745;
+        }
+        
+        .log-warning {
+            background-color: #fff3cd;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .log-error {
+            background-color: #f8d7da;
+            border-left: 3px solid #dc3545;
+        }
+        
+        .human-feedback {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .feedback-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .approve-btn {
+            background-color: #4caf50;
+        }
+        
+        .reject-btn {
+            background-color: #f44336;
+        }
+        
+        .modify-btn {
+            background-color: #ff9800;
+        }
+        
+        .contract-btn {
+            background-color: #9c27b0;
+            margin-right: 10px;
+        }
+        
+        .contract-btn:hover {
+            background-color: #7b1fa2;
+        }
+        
+        .preview-btn {
+            background-color: #607d8b;
+        }
+        
+        .preview-btn:hover {
+            background-color: #455a64;
+        }
+        
+        .status-info {
+            background-color: #e8f4fd;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .status-info pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        .final-content {
+            background-color: #f0f8ff;
+            border: 2px solid #4169e1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .final-content h3 {
+            color: #4169e1;
+            margin-top: 0;
+        }
+        
+        .content-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            border-left: 3px solid #4169e1;
+        }
+        
+        .content-section h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .human-feedback-btn {
+            background-color: #e91e63;
+            display: none;
+        }
+        
+        .human-feedback-btn:hover {
+            background-color: #c2185b;
+        }
+        
+        .human-feedback-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 智能文档审核系统</h1>
+        <p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">
+            演示人类返回节点特性 - AI分析 → 人类审核 → 智能决策
+        </p>
+        
+        <div class="form-group">
+            <label for="documentContent">文档内容:</label>
+            <textarea id="documentContent" placeholder="请输入需要审核的文档内容...">这是一份技术服务合同，约定了甲方委托乙方开发一套企业管理系统。合同包含以下主要条款：
+1. 项目范围：开发包含用户管理、权限控制、数据统计等功能的Web应用
+2. 开发周期：6个月
+3. 项目费用：100万元人民币
+4. 付款方式：分三期付款，签约30%，中期验收40%，最终验收30%
+5. 知识产权：源代码归甲方所有
+6. 技术要求：使用Java Spring框架，MySQL数据库
+7. 质量标准：符合国家软件质量标准，通过第三方测试
+8. 违约责任：延期交付按日收取0.1%违约金</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="documentType">文档类型:</label>
+            <select id="documentType">
+                <option value="contract">合同</option>
+                <option value="technical">技术文档</option>
+                <option value="policy">政策文件</option>
+                <option value="financial">财务报告</option>
+                <option value="general">通用文档</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="urgencyLevel">紧急程度:</label>
+            <select id="urgencyLevel">
+                <option value="low">低</option>
+                <option value="normal">中</option>
+                <option value="high">高</option>
+                <option value="critical">紧急</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="threadId">会话ID:</label>
+            <input type="text" id="threadId" value="demo_review_001" placeholder="输入唯一的会话标识符">
+        </div>
+        
+        <button onclick="startReview()" id="startBtn">🚀 开始审核</button>
+        <button onclick="reviewContract()" id="contractBtn" class="contract-btn">📋 审核问题合同</button>
+        <button onclick="previewContract()" id="previewBtn" class="preview-btn">👁️ 预览合同</button>
+        <button onclick="triggerHumanFeedback()" id="humanFeedbackBtn" class="human-feedback-btn" style="display: none;">🤔 人工反馈</button>
+        <button onclick="getStatus()" id="statusBtn">📊 查看状态</button>
+        <button onclick="clearOutput()" id="clearBtn">🗑️ 清空输出</button>
+        
+        <div id="humanFeedback" class="human-feedback" style="display: none;">
+            <h3>🤔 等待人类审核</h3>
+            <p>AI分析已完成，请审核员对以下结果进行确认：</p>
+            <div id="aiAnalysisPreview" style="background: #f0f0f0; padding: 10px; border-radius: 4px; margin: 10px 0;"></div>
+            
+            <div class="form-group">
+                <label for="reviewComments">审核意见:</label>
+                <textarea id="reviewComments" placeholder="请填写您的审核意见..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="suggestedChanges">修改建议:</label>
+                <textarea id="suggestedChanges" placeholder="如果需要修改，请详细说明修改建议..."></textarea>
+            </div>
+            
+            <div class="feedback-buttons">
+                <button class="approve-btn" onclick="continueReview('approve')">✅ 通过</button>
+                <button class="reject-btn" onclick="continueReview('reject')">❌ 拒绝</button>
+                <button class="modify-btn" onclick="continueReview('modify')">📝 需要修改</button>
+            </div>
+        </div>
+        
+        <div id="output" class="output" style="display: none;">
+            <h3>📋 审核日志</h3>
+            <div id="logContainer"></div>
+        </div>
+        
+        <div id="statusInfo" class="status-info" style="display: none;">
+            <h3>📈 当前状态</h3>
+            <div id="statusContent"></div>
+        </div>
+        
+        <div id="finalContent" class="final-content" style="display: none;">
+            <h3>📋 审核最终结果</h3>
+            <div id="finalContentContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentThreadId = '';
+        let isWaitingForHuman = false;
+        let streamContent = {}; // 存储流式内容
+        let finalResults = {}; // 存储最终结果
+
+        function reviewContract() {
+            const threadId = document.getElementById('threadId').value;
+            
+            currentThreadId = threadId;
+            isWaitingForHuman = false;
+            
+            const contractBtn = document.getElementById('contractBtn');
+            contractBtn.disabled = true;
+            contractBtn.textContent = '🔄 审核中...';
+            
+            document.getElementById('output').style.display = 'block';
+            document.getElementById('humanFeedback').style.display = 'none';
+            document.getElementById('humanFeedbackBtn').style.display = 'inline-block';
+            clearLogs();
+            
+            addLog('正在审核预设的问题合同文档...', 'info');
+            
+            const url = `/document/review/contract?thread_id=${threadId}`;
+            
+            const eventSource = new EventSource(url);
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleReviewEvent(data);
+                } catch (e) {
+                    addLog('解析数据错误: ' + event.data, 'error');
+                }
+            };
+            
+            eventSource.onerror = function(event) {
+                addLog('连接错误或审核完成', 'warning');
+                eventSource.close();
+                
+                contractBtn.disabled = false;
+                contractBtn.textContent = '📋 审核问题合同';
+                
+                if (isWaitingForHuman) {
+                    document.getElementById('humanFeedback').style.display = 'block';
+                }
+            };
+        }
+        
+        function previewContract() {
+            fetch('/document/review/contract/preview')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        addLog('预览失败: ' + data.error, 'error');
+                        return;
+                    }
+                    
+                    document.getElementById('statusInfo').style.display = 'block';
+                    document.getElementById('statusContent').innerHTML = 
+                        `<h4>📄 ${data.filename}</h4>
+                         <p><strong>描述:</strong> ${data.description}</p>
+                         <p><strong>文档类型:</strong> ${data.type}</p>
+                         <p><strong>文档长度:</strong> ${data.length} 字符</p>
+                         <hr>
+                         <h5>文档内容预览:</h5>
+                         <pre style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 4px;">${data.content}</pre>`;
+                    
+                    // 同时填充到文本区域
+                    document.getElementById('documentContent').value = data.content;
+                    document.getElementById('documentType').value = data.type;
+                    document.getElementById('urgencyLevel').value = 'high';
+                    
+                    addLog('合同文档已加载到编辑区域', 'info');
+                })
+                .catch(error => {
+                    addLog('预览合同失败: ' + error.message, 'error');
+                });
+        }
+        
+        function startReview() {
+            const content = document.getElementById('documentContent').value;
+            const type = document.getElementById('documentType').value;
+            const urgency = document.getElementById('urgencyLevel').value;
+            const threadId = document.getElementById('threadId').value;
+            
+            if (!content.trim()) {
+                alert('请输入文档内容');
+                return;
+            }
+            
+            currentThreadId = threadId;
+            isWaitingForHuman = false;
+            streamContent = {};
+            finalResults = {};
+            
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = true;
+            startBtn.textContent = '🔄 审核中...';
+            
+            document.getElementById('output').style.display = 'block';
+            document.getElementById('humanFeedback').style.display = 'none';
+            document.getElementById('humanFeedbackBtn').style.display = 'inline-block';
+            clearLogs();
+            
+            const url = `/document/review/start?document_content=${encodeURIComponent(content)}&document_type=${type}&urgency_level=${urgency}&thread_id=${threadId}`;
+            
+            const eventSource = new EventSource(url);
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleReviewEvent(data);
+                } catch (e) {
+                    addLog('解析数据错误: ' + event.data, 'error');
+                }
+            };
+            
+            eventSource.onerror = function(event) {
+                addLog('连接错误或审核完成', 'warning');
+                eventSource.close();
+                
+                startBtn.disabled = false;
+                startBtn.textContent = '🚀 开始审核';
+                
+                if (isWaitingForHuman) {
+                    document.getElementById('humanFeedback').style.display = 'block';
+                } else {
+                    // 如果不是等待人工反馈，显示最终结果
+                    displayFinalContent();
+                }
+            };
+        }
+        
+        function continueReview(action) {
+            const comments = document.getElementById('reviewComments').value;
+            const changes = document.getElementById('suggestedChanges').value;
+            
+            document.getElementById('humanFeedback').style.display = 'none';
+            addLog(`人类审核决策: ${action}`, 'info');
+            
+            if (comments) {
+                addLog(`审核意见: ${comments}`, 'info');
+            }
+            
+            const url = `/document/review/continue?thread_id=${currentThreadId}&action=${action}&comments=${encodeURIComponent(comments)}&suggested_changes=${encodeURIComponent(changes)}`;
+            
+            const eventSource = new EventSource(url);
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleReviewEvent(data);
+                } catch (e) {
+                    addLog('解析数据错误: ' + event.data, 'error');
+                }
+            };
+            
+            eventSource.onerror = function(event) {
+                addLog('审核流程已完成', 'info');
+                eventSource.close();
+                
+                // 显示最终结果
+                displayFinalContent();
+            };
+        }
+        
+        function handleReviewEvent(data) {
+            if (data.node) {
+                const nodeMessages = {
+                    'content_analysis': '📝 正在进行内容分析...',
+                    'compliance_check': '⚖️ 正在进行合规性检查...',
+                    'risk_assessment': '⚠️ 正在进行风险评估...',
+                    'human_review': '🤔 等待人类审核确认...',
+                    'approval_process': '✅ 正在处理审批流程...',
+                    'rejection_process': '❌ 正在处理拒绝流程...',
+                    'modification_process': '📝 正在生成修改指导...',
+                    'final_report': '📋 正在生成最终报告...'
+                };
+                
+                const message = nodeMessages[data.node] || `处理节点: ${data.node}`;
+                addLog(message, 'info');
+                
+                // 检查是否到达人工审核节点
+                if (data.node === 'human_review') {
+                    isWaitingForHuman = true;
+                    
+                    // 显示AI分析结果预览
+                    if (data.data) {
+                        let aiAnalysisText = '';
+                        if (data.data.ai_analysis_result) {
+                            aiAnalysisText = data.data.ai_analysis_result;
+                        } else if (data.data.review_instruction) {
+                            aiAnalysisText = data.data.review_instruction;
+                        }
+                        
+                        if (aiAnalysisText) {
+                            const preview = aiAnalysisText.length > 300 ? 
+                                aiAnalysisText.substring(0, 300) + '...' : aiAnalysisText;
+                            document.getElementById('aiAnalysisPreview').textContent = preview;
+                        }
+                    }
+                    
+                    // 延时显示人工反馈界面，确保AI分析完成
+                    setTimeout(() => {
+                        if (isWaitingForHuman) {
+                            document.getElementById('humanFeedback').style.display = 'block';
+                            addLog('⏸️ 工作流已暂停，等待人工审核反馈', 'warning');
+                        }
+                    }, 1000);
+                }
+                
+                // 处理节点数据
+                if (data.data) {
+                    for (const [key, value] of Object.entries(data.data)) {
+                        if (typeof value === 'string' && value.length > 50) {
+                            addLog(`${key}: ${value.substring(0, 100)}...`, 'info');
+                            // 存储完整内容到最终结果
+                            finalResults[key] = value;
+                        } else if (typeof value !== 'object') {
+                            addLog(`${key}: ${value}`, 'info');
+                            finalResults[key] = value;
+                        }
+                    }
+                }
+            } else {
+                // 流式输出处理
+                for (const [key, value] of Object.entries(data)) {
+                    if (typeof value === 'string') {
+                        // 累积流式内容到最终显示区域
+                        accumulateStreamContent(key, value);
+                        addLog(`${key}: ${value}`, 'info');
+                    }
+                }
+            }
+        }
+        
+        function accumulateStreamContent(key, value) {
+            if (!streamContent[key]) {
+                streamContent[key] = '';
+            }
+            streamContent[key] += value;
+        }
+        
+        function displayFinalContent() {
+            const finalContentDiv = document.getElementById('finalContent');
+            const containerDiv = document.getElementById('finalContentContainer');
+            
+            if (Object.keys(streamContent).length === 0 && Object.keys(finalResults).length === 0) {
+                return; // 没有内容要显示
+            }
+            
+            let html = '';
+            
+            // 显示累积的流式内容
+            for (const [key, content] of Object.entries(streamContent)) {
+                if (content && content.trim()) {
+                    html += `
+                        <div class="content-section">
+                            <h4>${getContentTitle(key)}</h4>
+                            <div style="white-space: pre-wrap; word-wrap: break-word;">${content}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // 显示最终结果
+            for (const [key, value] of Object.entries(finalResults)) {
+                if (value && typeof value === 'string' && value.trim()) {
+                    html += `
+                        <div class="content-section">
+                            <h4>${getContentTitle(key)}</h4>
+                            <div style="white-space: pre-wrap; word-wrap: break-word;">${value}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            if (html) {
+                containerDiv.innerHTML = html;
+                finalContentDiv.style.display = 'block';
+                addLog('✅ 审核结果已展示', 'info');
+            }
+        }
+        
+        function getContentTitle(key) {
+            const titles = {
+                'content_analysis_result': '📝 内容分析结果',
+                'compliance_result': '⚖️ 合规检查结果',
+                'ai_analysis_result': '🤖 AI风险评估结果',
+                'approval_reason': '✅ 审批决定',
+                'rejection_reason': '❌ 拒绝原因',
+                'modification_guidance': '📝 修改指导',
+                'final_report': '📋 最终审核报告',
+                'content_analysis_stream': '📝 内容分析过程',
+                'compliance_check_stream': '⚖️ 合规检查过程',
+                'risk_assessment_stream': '⚠️ 风险评估过程',
+                'approval_process_stream': '✅ 审批处理过程',
+                'rejection_process_stream': '❌ 拒绝处理过程',
+                'modification_process_stream': '📝 修改指导过程',
+                'final_report_stream': '📋 报告生成过程'
+            };
+            return titles[key] || key;
+        }
+        
+        function getStatus() {
+            if (!currentThreadId) {
+                alert('请先开始一个审核流程');
+                return;
+            }
+            
+            fetch(`/document/review/status?thread_id=${currentThreadId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('statusInfo').style.display = 'block';
+                    document.getElementById('statusContent').innerHTML = 
+                        `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                })
+                .catch(error => {
+                    addLog('获取状态失败: ' + error.message, 'error');
+                });
+        }
+        
+        function addLog(message, level = 'info') {
+            const container = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${level}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function clearOutput() {
+            clearLogs();
+            streamContent = {};
+            finalResults = {};
+            isWaitingForHuman = false;
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('humanFeedback').style.display = 'none';
+            document.getElementById('statusInfo').style.display = 'none';
+            document.getElementById('finalContent').style.display = 'none';
+            document.getElementById('humanFeedbackBtn').style.display = 'none';
+        }
+        
+        function triggerHumanFeedback() {
+            if (!currentThreadId) {
+                addLog('❌ 请先开始一个审核流程', 'error');
+                return;
+            }
+            
+            // 显示人工反馈界面
+            const humanFeedbackDiv = document.getElementById('humanFeedback');
+            humanFeedbackDiv.style.display = 'block';
+            
+            // 填充AI分析预览（如果有流式内容）
+            const aiAnalysisPreview = document.getElementById('aiAnalysisPreview');
+            let analysisContent = '';
+            
+            if (streamContent['ai_analysis_result']) {
+                analysisContent = streamContent['ai_analysis_result'];
+            } else if (streamContent['content_analysis_stream']) {
+                analysisContent = streamContent['content_analysis_stream'];
+            } else if (streamContent['compliance_check_stream']) {
+                analysisContent = streamContent['compliance_check_stream'];
+            } else {
+                analysisContent = '正在等待AI分析结果...';
+            }
+            
+            aiAnalysisPreview.innerHTML = `<h5>AI分析结果：</h5><p>${analysisContent}</p>`;
+            
+            // 设置等待人类反馈状态
+            isWaitingForHuman = true;
+            
+            addLog('🤔 手动触发人工反馈界面', 'info');
+        }
+        
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = '';
+        }
+        
+        // 生成随机会话ID
+        document.getElementById('threadId').value = 'review_' + Math.random().toString(36).substr(2, 9);
+    </script>
+</body>
+</html>
