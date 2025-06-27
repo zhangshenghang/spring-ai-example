@@ -161,7 +161,7 @@ state.withHumanFeedback(new OverAllState.HumanFeedback(feedbackData, ""));
 返回结果：
 
 ```json
-2025-06-26T17:14:48.044+08:00  INFO 40111 --- [human-node] [pool-2-thread-1] c.a.c.a.r.c.p.DocumentReviewProcess      : Document review output = NodeOutput{node=risk_assessment, state=OverAllState{data={content_analysis_result=```json
+Document review output = NodeOutput{node=risk_assessment, state=OverAllState{data={content_analysis_result=```json
 {
   "summary": "该文档是一份软件开发服务合同，详细描述了甲方（委托方）与乙方（承接方）之间关于开发一套企业级管理系统的各项条款，包括项目概述、开发周期、合同金额及付款方式、技术要求、交付标准、知识产权归属、保密条款、违约责任、争议解决办法及其他条款。",
   "main_topics": [
