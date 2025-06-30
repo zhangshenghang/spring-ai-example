@@ -18,8 +18,7 @@ import java.util.Map;
  * 风险评估节点
  * 评估文档可能带来的各种风险并给出风险等级
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class RiskAssessmentNode implements NodeAction {
 

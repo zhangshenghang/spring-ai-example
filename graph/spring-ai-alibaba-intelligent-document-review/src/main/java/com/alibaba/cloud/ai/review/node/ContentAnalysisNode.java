@@ -18,8 +18,7 @@ import java.util.Map;
  * 内容分析节点
  * 对文档内容进行初步分析，识别文档类型、主要内容和基本结构
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class ContentAnalysisNode implements NodeAction {
 

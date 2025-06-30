@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
  * 审核决策分发器
  * 根据人工审核员的决策，决定下一步流程
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class ReviewDecisionDispatcher implements EdgeAction {
 

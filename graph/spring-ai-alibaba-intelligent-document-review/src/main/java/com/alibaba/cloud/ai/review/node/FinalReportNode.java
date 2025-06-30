@@ -19,8 +19,7 @@ import java.util.Map;
  * 最终报告节点
  * 生成完整的文档审核报告，包含整个审核流程的总结
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class FinalReportNode implements NodeAction {
 

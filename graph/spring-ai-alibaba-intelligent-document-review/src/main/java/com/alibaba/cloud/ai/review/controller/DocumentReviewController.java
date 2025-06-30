@@ -35,8 +35,7 @@ import java.util.Map;
  * 智能文档审核系统控制器
  * 演示人类返回节点特性：AI分析 -> 人类审核 -> 后续处理
  *
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 @RestController
 @RequestMapping("/document/review")

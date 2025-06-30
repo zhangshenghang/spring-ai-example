@@ -19,8 +19,7 @@ import java.util.Map;
  * 修改处理节点
  * 当文档需要修改后重新审核时，生成修改指导和跟进计划
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class ModificationProcessNode implements NodeAction {
 

@@ -18,8 +18,7 @@ import java.util.Map;
  * 合规性检查节点
  * 检查文档是否符合相关法规、标准和公司政策
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class ComplianceCheckNode implements NodeAction {
 

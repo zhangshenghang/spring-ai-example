@@ -14,8 +14,7 @@ import java.util.Map;
  * 等待人类审核员对AI分析结果进行确认和决策
  * 这是演示人类返回节点特性的关键节点
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class HumanReviewNode implements NodeAction {
 

@@ -24,8 +24,7 @@ import static com.alibaba.cloud.ai.graph.action.AsyncNodeAction.node_async;
  * 文档审核系统图形配置
  * 定义了完整的文档审核工作流：内容分析 -> 合规检查 -> 风险评估 -> 人工审核 -> 后续处理
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 @Configuration
 public class DocumentReviewGraphConfiguration {

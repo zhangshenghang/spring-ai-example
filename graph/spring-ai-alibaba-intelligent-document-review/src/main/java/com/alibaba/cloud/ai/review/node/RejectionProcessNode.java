@@ -19,8 +19,7 @@ import java.util.Map;
  * 拒绝处理节点
  * 当文档被人工审核拒绝后，生成拒绝通知和改进建议
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class RejectionProcessNode implements NodeAction {
 

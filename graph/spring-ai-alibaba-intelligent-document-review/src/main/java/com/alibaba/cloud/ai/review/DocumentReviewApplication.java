@@ -10,8 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 2. 人类审核员确认 AI 分析结果
  * 3. 根据人类决策执行后续流程（通过/拒绝/修改建议）
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 @SpringBootApplication
 public class DocumentReviewApplication {

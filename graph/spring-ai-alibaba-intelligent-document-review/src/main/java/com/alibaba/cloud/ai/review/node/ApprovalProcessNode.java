@@ -19,8 +19,7 @@ import java.util.Map;
  * 审批处理节点
  * 当文档通过人工审核后，生成正式的审批文件和后续处理指导
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class ApprovalProcessNode implements NodeAction {
 

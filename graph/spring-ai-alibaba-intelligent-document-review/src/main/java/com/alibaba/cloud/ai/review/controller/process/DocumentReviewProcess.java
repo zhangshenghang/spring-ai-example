@@ -20,8 +20,7 @@ import java.util.concurrent.Executors;
  * 文档审核流程处理器
  * 负责处理审核流程中的流式输出
  * 
- * @author yingzi
- * @since 2025/6/26
+ * @author Jast
  */
 public class DocumentReviewProcess {
 
